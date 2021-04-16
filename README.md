@@ -102,7 +102,7 @@ Kemudian, dideklarasikan juga code strftime sebagai formatting direktori yang di
 strftime(now, 80, "%Y-%m-%d_%H:%M:%S", tm);
 ```
 
-Selanjutnya, dibuat sebuah direktori sesuai dengan namanya :
+Selanjutnya, dibuat sebuah direktori sesuai dengan namanya dengan process di fork() dan child process akan melakukan execv() terhadap perintah mkdir dengan argument now :
 ```
 pid_t child_id;
 child_id = fork();
