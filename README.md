@@ -40,7 +40,7 @@ Ranora adalah mahasiswa Teknik Informatika yang saat ini sedang menjalani magang
 ### Soal 3.a.
 Ranora harus membuat sebuah program C yang dimana setiap 40 detik membuat sebuah direktori dengan nama sesuai timestamp [YYYY-mm-dd_HH:ii:ss].\
 **Penyelesaian**\
-Untuk menyelesaikan 3a, kami mula-mula terpikirkan untuk membuat C program berupa daemon. Sebelumnya, kami memasukkan beberapa library daemon yang diperlukan. Beberapa library yang kami gunakan adalah:
+Untuk menyelesaikan 3a, kami mula-mula terpikirkan untuk membuat C program berupa daemon. Sebelumnya, kami memasukkan beberapa library daemon yang diperlukan. Beberapa library yang kami gunakan adalah :
 
 ```c
 #include <sys/types.h>
@@ -90,19 +90,19 @@ int main() {
 }
 ```
 
-Kemudian, kami mendeklarasikan variabel awal sebagai berikut:
+Kemudian, kami mendeklarasikan variabel awal sebagai berikut :
 ```c
 time_t t = time(NULL);
 struct tm *tm = localtime(&t);
 char now[80];
 ```
 
-Kemudian, dideklarasikan juga code strftime sebagai formatting direktori yang diinginkan:
+Kemudian, dideklarasikan juga code strftime sebagai formatting direktori yang diinginkan :
 ```c
 strftime(now, 80, "%Y-%m-%d_%H:%M:%S", tm);
 ```
 
-Lalu baru dibuat sebuah direktori:
+Selanjutnya, dibuat sebuah direktori sesuai dengan namanya :
 ```
 pid_t child_id;
 child_id = fork();
