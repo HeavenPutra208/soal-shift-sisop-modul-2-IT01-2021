@@ -309,17 +309,17 @@ Karena ada 2 mode, maka kami menggunakan `strcmp` untuk menyesuaikan format argu
   }
 ```
 ### Screenshot
-**Menggunakan argumen -z**\
+**Menggunakan argumen -z**
 <br>
 <img height="300" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/no3e-1.png" />
 <br>
-**Menggunakan argumen -x**\
+**Menggunakan argumen -x**
 <br>
 <img height="300" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/no3e-2.png" />
 <br>
-**Tidak Menggunakan argumen**\
+**Tidak Menggunakan argumen**
 <br>
 <img height="300" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/no3e-3.jpg" />
 <br>
 ### Kendala
-* Perlu memodifikasi sedikit pada format daemon yang ada pada modul\
+* Perlu memodifikasi sedikit pada format daemon yang ada pada modul
