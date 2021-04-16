@@ -56,22 +56,18 @@ Untuk menyelesaikan 3a, kami mula-mula terpikirkan untuk membuat C program berup
 #include <wait.h>
 ```
 
-Lalu, kami menggunakan format template daemon yang disediakan di modul. Nantinya, semua program akan dimasukkan ke dalam fungsi `main()`.
+Lalu, kami menggunakan format template daemon yang disediakan di modul (kecuali branch if chdir). Nantinya, semua program akan dimasukkan ke dalam fungsi `main()`. Untuk mengatur pembuatan direktori setiap 40 detik, maka nilai 'sleep()' diubah menjadi 'sleep(40)'.
 
 ```c
 int main() {
-  pid_t pid, sid;        // Variabel untuk menyimpan PID
+  pid_t pid, sid;
 
-  pid = fork();     // Menyimpan PID dari Child Process
+  pid = fork();
 
-  /* Keluar saat fork gagal
-  * (nilai variabel pid < 0) */
   if (pid < 0) {
     exit(EXIT_FAILURE);
   }
 
-  /* Keluar saat fork berhasil
-  * (nilai variabel pid adalah PID dari child process) */
   if (pid > 0) {
     exit(EXIT_SUCCESS);
   }
@@ -83,23 +79,39 @@ int main() {
     exit(EXIT_FAILURE);
   }
 
-  if ((chdir("/")) < 0) {
-    exit(EXIT_FAILURE);
-  }
-
   close(STDIN_FILENO);
   close(STDOUT_FILENO);
   close(STDERR_FILENO);
 
   while (1) {
-    // Tulis program kalian di sini
 
-    sleep(30);
+    sleep(40);
   }
 }
 ```
 
+Kemudian, kami mendeklarasikan variabel awal sebagai berikut:
+```c
+time_t t = time(NULL);
+struct tm *tm = localtime(&t);
+char now[80];
+```
 
+Kemudian, dideklarasikan juga code strftime sebagai formatting direktori yang diinginkan:
+```c
+strftime(now, 80, "%Y-%m-%d_%H:%M:%S", tm);
+```
+
+Lalu baru dibuat sebuah direktori:
+```
+pid_t child_id;
+child_id = fork();
+
+if (child_id == 0) {
+  char *argv[] = {"mkdir", now, NULL};
+  execv("/bin/mkdir", argv);
+}
+```
 ### Soal 3.b.
 Setiap direktori yang sudah dibuat diisi dengan 10 gambar yang didownload dari https://picsum.photos/, dimana setiap gambar akan didownload setiap 5 detik. Setiap gambar yang didownload akan diberi nama dengan format timestamp [YYYY-mm-dd_HH:ii:ss] dan gambar tersebut berbentuk persegi dengan ukuran (n%1000) + 50 pixel dimana n adalah detik Epoch Unix.\
 **Penyelesaian**\
