@@ -36,6 +36,7 @@ Di lain hal Steven anak yang tidak amat sangat super membenci matkul sisop, bebe
 Pada hari ulang tahun Stevany, Steven ingin memberikan Stevany zip berisikan hal-hal yang disukai Stevany. Steven ingin isi zipnya menjadi rapi dengan membuat folder masing-masing sesuai extensi.
 ### Soal 1.a
 Dikarenakan Stevany sangat menyukai huruf Y, Steven ingin nama folder-foldernya adalah Musyik untuk mp3, Fylm untuk mp4, dan Pyoto untuk jpg.\
+
 **Penyelesaian**\
 Mula-mula, kami menentukan library yang kami gunakan, yaitu sebagai berikut:
 ```c
@@ -61,6 +62,7 @@ Kemudian, kami membuat ketiga folder yang diinginkan, yaitu `Musyik`, `Fylm`, da
 ```
 ### Soal 1.b
 untuk musik Steven mendownloadnya dari link di bawah, film dari link di bawah lagi, dan foto dari link dibawah juga\
+
 **Penyelesaian**\
 Setelah ketiga folder dibuat pada soal 1a, kemudian kami membuat code untuk mendownload zip yang disediakan pada gdrive dengan bantuan pointer arr `*argv[]` yang menggunakan format downloading yang disediakan (`wget --no-check-certificate "https://drive.google.com/uc?id=**ID-FILE**&export=download" -O **Nama_untuk_filenya.ext**`). Agar satu-persatu, maka untuk file foto dan film diberikan fungsi wait `((wait(&status)) > 0)`
 
@@ -88,6 +90,7 @@ child_id = fork();
 
 ### Soal 1.c
 Steven tidak ingin isi folder yang dibuatnya berisikan zip, sehingga perlu meng-extract-nya setelah didownload\
+
 **Penyelesaian**\
 Untuk mengekstrak file zip yang telah didownload sebelumnya, maka di sini digunakan bantuan pointer arr `*argv[]` dengan perintah `unzip`:
 
@@ -102,6 +105,7 @@ while(wait(NULL) > 0);
 
 ### Soal 1.d
 memindahkannya ke dalam folder yang telah dibuat (hanya file yang dimasukkan).\
+
 **Penyelesaian**\
 Setelah file diunzip, kemudian hasil nya dimasukkan ke dalam masing-masing folder sesuai bentuk filenya():
 
@@ -130,8 +134,8 @@ Setelah file diunzip, kemudian hasil nya dimasukkan ke dalam masing-masing folde
 
 ### Soal 1.e
 Untuk memudahkan Steven, ia ingin semua hal di atas berjalan otomatis 6 jam sebelum waktu ulang tahun Stevany).\
-**Penyelesaian**\
 
+**Penyelesaian**\
 Di sini kami menggunakan fungsi `localtime(&t)` untuk mendapatkan waktu sekarang, lalu kami menggunakan fungsi `strcmp` untuk mengecek apakah waktu sekarang sama dengan waktu 6 jam sebelum ulang tahun Stevany.\
 
 ```c
@@ -146,6 +150,7 @@ Di sini kami menggunakan fungsi `localtime(&t)` untuk mendapatkan waktu sekarang
 
 ### Soal 1.f
 Setelah itu pada waktu ulang tahunnya Stevany, semua folder akan di zip dengan nama Lopyu_Stevany.zip dan semua folder akan di delete(sehingga hanya menyisakan .zip).\
+
 **Penyelesaian**\
 Di sini kami menggunakan fungsi `localtime(&t)` untuk mendapatkan waktu sekarang, lalu kami menggunakan fungsi `strcmp` untuk mengecek apakah waktu sekarang sama dengan waktu  ulang tahun Stevany.\
 ```c
@@ -201,6 +206,7 @@ Ranora adalah mahasiswa Teknik Informatika yang saat ini sedang menjalani magang
 
 ### Soal 3.a.
 Ranora harus membuat sebuah program C yang dimana setiap 40 detik membuat sebuah direktori dengan nama sesuai timestamp [YYYY-mm-dd_HH:ii:ss].\
+
 **Penyelesaian**\
 Untuk menyelesaikan 3a, kami mula-mula terpikirkan untuk membuat C program berupa daemon. Sebelumnya, kami memasukkan beberapa library daemon yang diperlukan. Beberapa library yang kami gunakan adalah:
 
@@ -278,6 +284,7 @@ if (child_id == 0) {
 Lalu, process akan di `fork()` dan *child process* akan melakukan `execv()` terhadap perintah `mkdir` dengan *argument* `now`. Sementara *parent process* tidak akan menunggu child process dan akan langsung `sleep()` selama 40 detik.
 ### Soal 3.b.
 Setiap direktori yang sudah dibuat diisi dengan 10 gambar yang didownload dari https://picsum.photos/, dimana setiap gambar akan didownload setiap 5 detik. Setiap gambar yang didownload akan diberi nama dengan format timestamp [YYYY-mm-dd_HH:ii:ss] dan gambar tersebut berbentuk persegi dengan ukuran (n%1000) + 50 pixel dimana n adalah detik Epoch Unix.\
+
 **Penyelesaian**\
 Setelah membuat direktori pada soal 3a, pada 3b kami membuat child process untuk mendownload 10 gambar, di mana program main nya tidak menunggu 10 gambar terdownload dan langsung `sleep(40)`/sleep selama 40 detik setelah fungsi `fork()` berjalan. Pada picsum photos, kita dapat mengatur format pixel gamabar dengan memodifikasi link dengan format `(t%1000)+50)`.
 
@@ -310,6 +317,7 @@ Child process/downloading gambar akan ter looping sebanyak 10 kali dan melakukan
 
 ### Soal 3.c.
 Setelah direktori telah terisi dengan 10 gambar, program tersebut akan membuat sebuah file “status.txt”, dimana didalamnya berisi pesan “Download Success” yang terenkripsi dengan teknik Caesar Cipher dan dengan shift 5. Caesar Cipher adalah Teknik enkripsi sederhana yang dimana dapat melakukan enkripsi string sesuai dengan shift/key yang kita tentukan. Misal huruf “A” akan dienkripsi dengan shift 4 maka akan menjadi “E”. Karena Ranora orangnya perfeksionis dan rapi, dia ingin setelah file tersebut dibuat, direktori akan di zip dan direktori akan didelete, sehingga menyisakan hanya file zip saja.\
+
 **Penyelesaian**\
 Di sini, setelah child process dari soal 3b. selesai berjalan, maka kami meneruskan program dengan membuat file bernama `status.txt`:
 
@@ -380,6 +388,7 @@ Setelah itu, kami melakukan zip terhadap folder yang ada, baru kemudian menghapu
 
 ### Soal 3.d.
 Untuk mempermudah pengendalian program, pembimbing magang Ranora ingin program tersebut akan men-generate sebuah program “Killer” yang executable, dimana program tersebut akan menterminasi semua proses program yang sedang berjalan dan akan menghapus dirinya sendiri setelah program dijalankan. Karena Ranora menyukai sesuatu hal yang baru, maka Ranora memiliki ide untuk program “Killer” yang dibuat nantinya harus merupakan program bash.\
+
 **Penyelesaian**\
 Mula-mula, kami membuat sebuah file baru bernama `killer.c` (Deklarasi file ini dilakukan sebelum bagian loop utama daemon dan setelah mendapatkan **Session ID** (`sid`)):
 
@@ -432,6 +441,7 @@ pid = fork();
 
 ### Soal 3.e.
 Pembimbing magang Ranora juga ingin nantinya program utama yang dibuat Ranora dapat dijalankan di dalam dua mode. Untuk mengaktifkan mode pertama, program harus dijalankan dengan argumen -z, dan Ketika dijalankan dalam mode pertama, program utama akan langsung menghentikan semua operasinya Ketika program Killer dijalankan. Sedangkan untuk mengaktifkan mode kedua, program harus dijalankan dengan argumen -x, dan Ketika dijalankan dalam mode kedua, program utama akan berhenti namun membiarkan proses di setiap direktori yang masih berjalan hingga selesai (Direktori yang sudah dibuat akan mendownload gambar sampai selesai dan membuat file txt, lalu zip dan delete direktori).\
+
 **Penyelesaian**\
 Karena ada 2 mode, maka kami menggunakan `strcmp` untuk menyesuaikan format argumen yang dijalankan pada terminal. Argumen -z menggunakan format `fprintf(killer, func, sid)` untuk memberhentikan semua proses. Sedangkan, argumen -x menggunakan format `fprintf(killer, func, sid)` untuk memberhentikan program utama, namun proses di folder masih berjalan:
 
