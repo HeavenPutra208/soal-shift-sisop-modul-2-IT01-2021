@@ -29,11 +29,149 @@ Kelompok IT06
 ---
 
 ## Soal 1
+Pada suatu masa, hiduplah seorang Steven yang hidupnya pas-pasan. Steven punya pacar, namun sudah putus sebelum pacaran. Ketika dia galau memikirkan mantan, ia selalu menonton https://www.youtube.com/watch?v=568DH_9CMKI untuk menghilangkan kesedihannya. 
+
+Di lain hal Steven anak yang tidak amat sangat super membenci matkul sisop, beberapa jam setelah diputus oleh pacarnya dia menemukan wanita lain bernama Stevany, namun Stevany berkebalikan dengan Steven karena menyukai sisop. Steven ingin terlihat jago matkul sisop demi menarik perhatian Stevany.
+
+Pada hari ulang tahun Stevany, Steven ingin memberikan Stevany zip berisikan hal-hal yang disukai Stevany. Steven ingin isi zipnya menjadi rapi dengan membuat folder masing-masing sesuai extensi.
+### Soal 1.a
+Dikarenakan Stevany sangat menyukai huruf Y, Steven ingin nama folder-foldernya adalah Musyik untuk mp3, Fylm untuk mp4, dan Pyoto untuk jpg.\
+**Penyelesaian**\
+Mula-mula, kami menentukan library yang kami gunakan, yaitu sebagai berikut:
+```c
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
+#include <syslog.h>
+#include <string.h>
+#include <time.h>
+#include <wait.h>
+```
+
+Kemudian, kami membuat ketiga folder yang diinginkan, yaitu `Musyik`, `Fylm`, dan `Pyoto` berupa `child process`:
+```c
+  if (child_id == 0) {
+    char *argv[] = {"mkdir", "Musyik", "Fylm", "Pyoto",  NULL};
+    execv("/bin/mkdir", argv);
+  }
+```
+### Soal 1.b
+untuk musik Steven mendownloadnya dari link di bawah, film dari link di bawah lagi, dan foto dari link dibawah juga\
+**Penyelesaian**\
+Setelah ketiga folder dibuat pada soal 1a, kemudian kami membuat code untuk mendownload zip yang disediakan pada gdrive dengan bantuan pointer arr `*argv[]` yang menggunakan format downloading yang disediakan (`wget --no-check-certificate "https://drive.google.com/uc?id=**ID-FILE**&export=download" -O **Nama_untuk_filenya.ext**`). Agar satu-persatu, maka untuk file foto dan film diberikan fungsi wait `((wait(&status)) > 0)`
+
+```c
+child_id = fork();
+    if (child_id == 0) {
+      char *argv[] = {"Wget --no-check-certificate ", "https://drive.google.com/uc?id=1ZG8nRBRPquhYXq_sISdsVcXx5VdEgi-J&export=download", "-O", "Musik_for_Stevany.zip",  NULL};
+      execv("/usr/bin/wget", argv);
+    }
+
+	child_id = fork();
+	if (child_id == 0) {
+	  while ((wait(&status)) > 0);
+      char *argv[] = {"Wget --no-check-certificate ", "https://drive.google.com/uc?id=1FsrAzb9B5ixooGUs0dGiBr-rC7TS9wTD&export=download", "-O", "Foto_for_Stevany.zip",  NULL};
+      execv("/usr/bin/wget", argv);
+    }
+
+	child_id = fork();
+	if (child_id == 0) {
+	  while ((wait(&status)) > 0);
+      char *argv[] = {"Wget --no-check-certificate ", "https://drive.google.com/uc?id=1ktjGgDkL0nNpY-vT7rT7O6ZI47Ke9xcp&export=download", "-O", "Film_for_Stevany.zip",  NULL};
+      execv("/usr/bin/wget", argv);
+    }
+```
+
+### Soal 1.c
+Steven tidak ingin isi folder yang dibuatnya berisikan zip, sehingga perlu meng-extract-nya setelah didownload\
+**Penyelesaian**\
+Untuk mengekstrak file zip yang telah didownload sebelumnya, maka di sini digunakan bantuan pointer arr `*argv[]` dengan perintah `unzip`:
+
+```c
+while(wait(NULL) > 0);
+    child_id = fork();
+    if (child_id == 0) {
+      char *argv[] = {"unzip", "*.zip", NULL};
+      execv("/usr/bin/unzip", argv);
+    }
+```
+
+### Soal 1.d
+memindahkannya ke dalam folder yang telah dibuat (hanya file yang dimasukkan).\
+**Penyelesaian**\
+Setelah file diunzip, kemudian hasil nya dimasukkan ke dalam masing-masing folder sesuai bentuk filenya():
+
+```c
+  	while(wait(NULL) > 0);
+    child_id = fork();
+    	if (child_id == 0) {
+    	char *argv[] = {"mv", "MUSIK", "Musyik", NULL};
+    	execv("/bin/mv", argv);
+    }
+	
+	while(wait(NULL) > 0);
+    child_id = fork();
+    	if (child_id == 0) {
+    	char *argv[] = {"mv", "FOTO", "Pyoto", NULL};
+    	execv("/bin/mv", argv);
+    }
+	
+	while(wait(NULL) > 0);
+    child_id = fork();
+    	if (child_id == 0) {
+    	char *argv[] = {"mv", "FILM", "Fylm", NULL};
+    	execv("/bin/mv", argv);
+    }
+```
+
+### Soal 1.e
+Untuk memudahkan Steven, ia ingin semua hal di atas berjalan otomatis 6 jam sebelum waktu ulang tahun Stevany).\
+**Penyelesaian**\
+Di sini kami masih kebingungan untuk membuat code agar berjalan otomatis pada set waktu tertentu
+
+### Soal 1.f
+Setelah itu pada waktu ulang tahunnya Stevany, semua folder akan di zip dengan nama Lopyu_Stevany.zip dan semua folder akan di delete(sehingga hanya menyisakan .zip).\
+**Penyelesaian**\
+Dimisalkan sudah waktu ulang tahun Stevany, maka folder-folder yang dibuat Steven dimasukkan jadi satu sekaligus di zip dengan code berikut:
+```c
+	while(wait(NULL) > 0);
+	child_id = fork();
+    if (child_id == 0) {
+        char *argv[] = {"zip", "-r", " Lopyu_Stevany.zip", "Musyik", "Pyoto", "Fylm", NULL};
+        execv("/usr/bin/zip", argv);
+```
+
+Dan semua folder-folder selain Lopyu_Stevany.zip akan didelete dengan `rm`:
+```c
+	while(wait(NULL) > 0);
+    child_id = fork();
+    	if (child_id == 0) {
+    	char *argv[] = {"rm ", "-r", "Musyik", "Pyoto", "Fylm", NULL};
+    	execv("/bin/rm", argv);
+    }
+```
+
+### Screenshot
+**Hasil Running Code**
+<br>
+<img height="300" src="   " />
+<br>
+<br>
+<img height="300" src="   " />
+<br>
+
 ### Kendala
 * Kebingungan dalam mengeksekusi code yang diinginkan pada waktu spesifik
-
+* 
 ## Soal 2
 ### Kendala
+* Kebingungan menentukan syntax yang sesuai untuk menghapus folder-folder yang tidak penting
+* Kebingungan syntax dalam pengklasifikasian hewan-hewan ke folder yang sesuai
+* Kebingungan membuat file .txt yang menyantumkan nama dan umur setiap hewan
 
 ## Soal 3
 Ranora adalah mahasiswa Teknik Informatika yang saat ini sedang menjalani magang di perusahan ternama yang bernama “FakeKos Corp.”, perusahaan yang bergerak dibidang keamanan data. Karena Ranora masih magang, maka beban tugasnya tidak sebesar beban tugas pekerja tetap perusahaan. Di hari pertama Ranora bekerja, pembimbing magang Ranora memberi tugas pertamanya untuk membuat sebuah program.
