@@ -30,6 +30,7 @@ Kelompok IT06
 
 ## Soal 1
 ### Kendala
+* Kebingungan dalam mengeksekusi code yang diinginkan pada waktu spesifik
 
 ## Soal 2
 ### Kendala
