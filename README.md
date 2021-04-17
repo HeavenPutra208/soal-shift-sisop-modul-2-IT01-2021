@@ -156,13 +156,13 @@ Dan semua folder-folder selain Lopyu_Stevany.zip akan didelete dengan `rm`:
 ```
 
 ### Screenshot
-**Hasil Running Code**\
+**Hasil Running Code**
 
 <br>
-<img height="300" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/no1-1.png" />
+<img height="500" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/no1-1.png" />
 <br>
 <br>
-<img height="300" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/no1-2.png" />
+<img height="500" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/no1-2.png" />
 <br>
 
 ### Kendala
