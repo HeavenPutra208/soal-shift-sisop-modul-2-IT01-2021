@@ -131,11 +131,33 @@ Setelah file diunzip, kemudian hasil nya dimasukkan ke dalam masing-masing folde
 ### Soal 1.e
 Untuk memudahkan Steven, ia ingin semua hal di atas berjalan otomatis 6 jam sebelum waktu ulang tahun Stevany).\
 **Penyelesaian**\
-Di sini kami masih kebingungan untuk membuat code agar berjalan otomatis pada set waktu tertentu
+
+Di sini kami menggunakan fungsi `localtime(&t)` untuk mendapatkan waktu sekarang, lalu kami menggunakan fungsi `strcmp` untuk mengecek apakah waktu sekarang sama dengan waktu 6 jam sebelum ulang tahun Stevany.\
+
+```c
+    while (1) {
+
+        time_t t = time(NULL);
+        struct tm *tm = localtime(&t);
+        char now[80];
+        strftime(now, 80, "%Y-%m-%d %H:%M:%S", tm);
+        if(strcmp(now,"2021-04-09 16:22:00") == 0)
+```
 
 ### Soal 1.f
 Setelah itu pada waktu ulang tahunnya Stevany, semua folder akan di zip dengan nama Lopyu_Stevany.zip dan semua folder akan di delete(sehingga hanya menyisakan .zip).\
 **Penyelesaian**\
+Di sini kami menggunakan fungsi `localtime(&t)` untuk mendapatkan waktu sekarang, lalu kami menggunakan fungsi `strcmp` untuk mengecek apakah waktu sekarang sama dengan waktu  ulang tahun Stevany.\
+```c
+    while (1) {
+
+        time_t t = time(NULL);
+        struct tm *tm = localtime(&t);
+        char now[80];
+        strftime(now, 80, "%Y-%m-%d %H:%M:%S", tm);
+        if(strcmp(now,"2021-04-09 22:22:00") == 0)
+```
+
 Dimisalkan sudah waktu ulang tahun Stevany, maka folder-folder yang dibuat Steven dimasukkan jadi satu sekaligus di zip dengan code berikut:
 ```c
 	while(wait(NULL) > 0);
