@@ -40,39 +40,21 @@ int main(int argc, char *argv[]) {
 
 
   FILE *killer;
-  killer = fopen("killer.c", "w");
+  killer = fopen("kill.sh", "w");
 
   if (strcmp(argv[1], "-z") == 0) {
-    char *func = ""
-    "#include <unistd.h>\n"
-    "#include <wait.h>\n"
-    "int main() {\n"
-      "pid_t child_id = fork();\n"
-      "if (child_id == 0) {\n"
-        "char *argv[] = {\"pkill\", \"-9\", \"-s\", \"%d\", NULL};\n"
-        "execv(\"/usr/bin/pkill\", argv);\n"
-      "}\n"
-      "while(wait(NULL) > 0);\n"
-      "char *argv[] = {\"rm\", \"killer\", NULL};\n"
-      "execv(\"/bin/rm\", argv);\n"
-    "}\n";
+    char *func = "\n"
+    "#!/bin/bash\n"
+    "/usr/bin/kill -9 \"%d\"\n"
+    "/bin/rm kill.sh\n";
     fprintf(killer, func, sid);
   }
 
   if (strcmp(argv[1], "-x") == 0) {
-    char *func = ""
-    "#include <unistd.h>\n"
-    "#include <wait.h>\n"
-    "int main() {\n"
-      "pid_t child_id = fork();\n"
-      "if (child_id == 0) {\n"
-        "char *argv[] = {\"kill\", \"-9\", \"%d\", NULL};\n"
-        "execv(\"/bin/kill\", argv);\n"
-      "}\n"
-      "while(wait(NULL) > 0);\n"
-      "char *argv[] = {\"rm\", \"killer\", NULL};\n"
-      "execv(\"/bin/rm\", argv);\n"
-    "}\n";
+    char *func = "\n"
+    "#!/bin/bash\n"
+    "/usr/bin/kill -9 \"%d\"\n"
+    "/bin/rm kill.sh\n";
     fprintf(killer, func, getpid());
   }
 
@@ -80,16 +62,11 @@ int main(int argc, char *argv[]) {
 
   pid = fork();
   if (pid == 0) {
-    char *argv[] = {"gcc", "killer.c", "-o", "killer", NULL};
-    execv("/usr/bin/gcc", argv);
+    char *argv[] = {"chmod","+x","kill.sh", NULL};
+    execv("/bin/chmod", argv);
   }
   while(wait(NULL) != pid);
 
-  pid = fork();
-  if (pid == 0) {
-    char *argv[] = {"rm", "killer.c", NULL};
-    execv("/bin/rm", argv);
-  }
 
   close(STDIN_FILENO);
   close(STDOUT_FILENO);
