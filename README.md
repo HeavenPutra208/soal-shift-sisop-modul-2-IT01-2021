@@ -233,28 +233,189 @@ Loba bekerja di sebuah petshop terkenal, suatu saat dia mendapatkan zip yang ber
 Pertama-tama program perlu mengextract zip yang diberikan ke dalam folder “/home/[user]/modul2/petshop”. Karena bos Loba teledor, dalam zip tersebut bisa berisi folder-folder yang tidak penting, maka program harus bisa membedakan file dan folder sehingga dapat memproses file yang seharusnya dikerjakan dan menghapus folder-folder yang tidak dibutuhkan.
 
 **Penyelesaian**\
+Mula-mula, kami menuliskan library yang dibutuhkan:
+
+```c
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
+#include <syslog.h>
+#include <string.h>
+#include <dirent.h>
+#include <wait.h>
+```
+
+Kemudian, kami mendownload terlebih dulu zip yang diberikan pada cd `home/aless/modul2`:
+
+```c
+    chdir("/home/aless/modul2/");
+
+    child_id = fork();
+    if (child_id == 0) {
+    char *argv[] = {"unzip", "pets.zip", "-d", "petshop", NULL};
+    execv("/usr/bin/unzip", argv);
+    }
+```
+
+Lalu, kami menghapus isi zip berupa folder-folder yang tidak berguna:
+
+```c
+    while(wait(NULL) > 0);
+    child_id = fork();
+        if (child_id == 0) {
+        char *argv[] = {"rm ", "-r", "apex_cheats", "musics", "unimportant_files", NULL};
+        execv("/bin/rm", argv);
+    }    
+```
 
 ### Soal 2.b.
 Foto peliharaan perlu dikategorikan sesuai jenis peliharaan, maka kamu harus membuat folder untuk setiap jenis peliharaan yang ada dalam zip. Karena kamu tidak mungkin memeriksa satu-persatu, maka program harus membuatkan folder-folder yang dibutuhkan sesuai dengan isi zip.\
-Contoh: Jenis peliharaan kucing akan disimpan dalam “/petshop/cat”, jenis peliharaan kura-kura akan disimpan dalam “/petshop/turtle”.
+Contoh: Jenis peliharaan kucing akan disimpan dalam “/petshop/cat”, jenis peliharaan kura-kura akan disimpan dalam “/petshop/turtle”.\
 
 **Penyelesaian**\
+
+Pertama, kami melakukan directory listing pada semua file yang ada di direktori `petshop`, setiap file akan dimasukkan ke sebuah fungsi yang bernama `input`:
+
+```c
+    chdir("petshop");
+
+    while(wait(NULL) > 0);
+    while (dp = readdir(dir)) {
+        if (strcmp(dp->d_name, "..") != 0 && strcmp(dp->d_name, ".") != 0) {
+            input(dp->d_name);
+        }
+    }
+```
+
+Jadi, pada fungsi `input`, kami memecahkan nama file yang diterima menjadi 3 bagian, yaitu jenis hewan, nama hewan, dan umur hewan. Untuk memecahkannya, kami menggunakan sebuah fungsi dari library `<string.h>` berupa `strtok`. Setelah dipecah, nama file akan disimpan di tiga variabel, yaitu variabel folder untuk jenis hewan, variabel nama untuk nama hewan, dan variabel age untuk umur hewan.
+
+```c
+void input(char *nama){
+
+  char regular[100];
+  sprintf(regular, "%s", nama);
+  DIR *dir = opendir(nama);
+  char *cek;
+  char *ket[3];
+  int i;
+  cek = strtok (nama,"_;");
+  while (cek != NULL)
+  {
+      for ( i = 0; i < 3; i++)
+      {
+        ket[i] = cek;
+        cek = strtok (NULL, "_;");
+      }
+    char *folder = ket[0];
+    char *nama = ket[1];
+    char *age = ket[2];
+
+    char *umur;
+    umur = strstr(age ,".jpg");
+    if (umur != NULL) {
+        int save = umur - age;
+        sprintf(age, "%.*s", save, age);
+    }
+
+    mkfolder(folder);
+    move(folder, nama, regular);
+    detail(folder, nama, age);
+  }
+  closedir(dir);
+}
+```
+
+Selanjutnya, kami menggunakan variabel folder pada fungsi `mkfolder` untuk membuat sebuah folder jenis hewan.
+
+```c
+void mkfolder(char *nama){
+
+    char hewan[20];
+    sprintf(hewan, "%s", nama);
+	child_id = fork();
+    if (child_id == 0) {
+	    while ((wait(&status)) > 0);
+        char *argv[] = {"mkdir", hewan, NULL};
+        execv("/bin/mkdir", argv);
+    }
+
+}
+```
 
 ### Soal 2.c.
 Setelah folder kategori berhasil dibuat, programmu akan memindahkan foto ke folder dengan kategori yang sesuai dan di rename dengan nama peliharaan.
 Contoh: “/petshop/cat/joni.jpg”.
 
 **Penyelesaian**\
+Untuk memindahkan foto, kami menggunakan sebuah fungsi `move` di mana menggunakan 3 variabel `fold` untuk folder jenis hewan, `nama` untuk nama hewan, dan `reg` untuk nama asli dari filenya. Di fungsi `move`, terdapat 2 `execv("/bin/mv", argv);`, di mana yang pertama digunakan untuk me-rename nama file aslinya dengan nama hewannya saja. Lalu, yang kedua digunakan untuk memindahkan nama hewan ke folder hewan.
+
+``c
+void move(char *fold, char *nama, char *reg){
+    
+    char hewan[20];
+    sprintf(hewan, "%s", fold);
+    char *name[20];
+    sprintf(name, "%s.jpg", nama);
+    char *regular[100];
+    sprintf(regular, "%s", reg);
+
+    while ((wait(&status)) > 0);
+    child_id = fork();
+    if (child_id == 0) {
+    	char *argv[] = {"mv", regular, name, NULL};
+    	execv("/bin/mv", argv);
+    }
+
+	while ((wait(&status)) > 0);
+    child_id = fork();
+    if (child_id == 0) {
+    	char *argv[] = {"mv", name, hewan, NULL};
+    	execv("/bin/mv", argv);
+    }
+}
+
+```
 
 ### Soal 2.d.
 Karena dalam satu foto bisa terdapat lebih dari satu peliharaan maka foto harus di pindah ke masing-masing kategori yang sesuai. Contoh: foto dengan nama “dog;baro;1_cat;joni;2.jpg” dipindah ke folder “/petshop/cat/joni.jpg” dan “/petshop/dog/baro.jpg”.
 
 **Penyelesaian**\
+Sudah dijelaskan pada 2.c. karena pengerjaannya bersamaan.
 
 ### Soal 2.e.
 Di setiap folder buatlah sebuah file "keterangan.txt" yang berisi nama dan umur semua peliharaan dalam folder tersebut. Format harus sesuai contoh.
 
 **Penyelesaian**\
+
+Untuk menampilkan sebuah file `keterangan.txt` di setiap folder, maka dibuatlah fungsi `detail` yang menggunakan 3 variabel untuk jenis hewan, nama hewan, dan umur hewan. Lalu, fungsi `detail` akan membuat sebuah file yang bernama `keterangan.txt` yang berisi tentang nama dan umur dari hewan:
+
+```
+void detail(char *fold, char *nama, char *umur){
+    while ((wait(&status)) > 0);
+    child_id = fork();
+    if (child_id == 0) {
+        FILE  *keterangan;
+        char t[100];
+        sprintf(t, "%s/keterangan.txt", fold);
+        keterangan = fopen(t , "a");
+        fprintf(keterangan, "nama : %s\numur : %s\n\n", nama, umur);
+        fclose(keterangan);
+        exit(EXIT_SUCCESS);
+    }
+}
+```
+
+### Screenshot
+<br>
+<img height="500" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/Soal2-1.png" />
+<br>
+<br>
+<img height="500" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/Soal2-2.png" />
+<br>
 
 ### Kendala
 * Kebingungan menentukan syntax yang sesuai untuk menghapus folder-folder yang tidak penting
@@ -512,15 +673,14 @@ Karena ada 2 mode, maka kami menggunakan `strcmp` untuk menyesuaikan format argu
 ### Screenshot
 **Menggunakan argumen -z**
 <br>
-<img height="300" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/no3e-1.png" />
+<img height="300" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/Soal3-1.png" />
 <br>
 **Menggunakan argumen -x**
 <br>
-<img height="300" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/no3e-2.png" />
+<img height="300" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/imgSoal3-2.png" />
 <br>
-**Tidak Menggunakan argumen**
 <br>
-<img height="300" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/no3e-3.jpg" />
+<img height="300" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/Soal3-3.jpg" />
 <br>
 ### Kendala
 * Perlu memodifikasi sedikit pada format daemon yang ada pada modul
