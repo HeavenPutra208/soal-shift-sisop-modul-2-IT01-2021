@@ -7,9 +7,9 @@
 #include <unistd.h>
 #include <syslog.h>
 #include <string.h>
-#include <time.h>
 #include <wait.h>
-
+#include <time.h>
+#include <glob.h>
 
 int main(){
 
@@ -50,7 +50,7 @@ int main(){
         strftime(now, 80, "%Y-%m-%d %H:%M:%S", tm);
         if(strcmp(now,"2021-04-09 16:22:00") == 0){
 
-if (child_id == 0) {
+    if (child_id == 0) {
 	char *argv[] = {"mkdir", "Musyik", "Fylm", "Pyoto",  NULL};
     execv("/bin/mkdir", argv);
 	}
@@ -83,6 +83,30 @@ if (child_id == 0) {
     	execv("/usr/bin/unzip", argv);
     }
 
+    while(wait(NULL) > 0);
+    child_id = fork();
+    if (child_id == 0) {
+
+    glob_t globbuf;
+    globbuf.gl_offs = 2;
+    glob("FOTO/*.png", GLOB_DOOFFS, NULL, &globbuf);
+    globbuf.gl_pathv[0] = "rm";
+    globbuf.gl_pathv[1] = "-rf";
+    execv("/bin/rm", globbuf.gl_pathv);
+    }  
+
+    while(wait(NULL) > 0);
+    child_id = fork();
+    if (child_id == 0) {
+
+    glob_t globbuf;
+    globbuf.gl_offs = 2;
+    glob("FOTO/*.jpeg", GLOB_DOOFFS, NULL, &globbuf);
+    globbuf.gl_pathv[0] = "rm";
+    globbuf.gl_pathv[1] = "-rf";
+    execv("/bin/rm", globbuf.gl_pathv);
+    }  
+
 	while(wait(NULL) > 0);
     child_id = fork();
     	if (child_id == 0) {
@@ -103,6 +127,7 @@ if (child_id == 0) {
     	char *argv[] = {"mv", "FILM", "Fylm", NULL};
     	execv("/bin/mv", argv);
     }          
+  
 
             break;
 
