@@ -107,7 +107,35 @@ while(wait(NULL) > 0);
 memindahkannya ke dalam folder yang telah dibuat (hanya file yang dimasukkan).
 
 **Penyelesaian**\
-Setelah file diunzip, kemudian hasil nya dimasukkan ke dalam masing-masing folder sesuai bentuk filenya():
+Setelah file diunzip, kemudian untuk file dalam folder **FOTO** yang memiliki format selain **.jpg** akan dihapus:
+
+```c
+    while(wait(NULL) > 0);
+    child_id = fork();
+    if (child_id == 0) {
+
+    glob_t globbuf;
+    globbuf.gl_offs = 2;
+    glob("FOTO/*.png", GLOB_DOOFFS, NULL, &globbuf);
+    globbuf.gl_pathv[0] = "rm";
+    globbuf.gl_pathv[1] = "-rf";
+    execv("/bin/rm", globbuf.gl_pathv);
+    }  
+
+    while(wait(NULL) > 0);
+    child_id = fork();
+    if (child_id == 0) {
+
+    glob_t globbuf;
+    globbuf.gl_offs = 2;
+    glob("FOTO/*.jpeg", GLOB_DOOFFS, NULL, &globbuf);
+    globbuf.gl_pathv[0] = "rm";
+    globbuf.gl_pathv[1] = "-rf";
+    execv("/bin/rm", globbuf.gl_pathv);
+    }  
+```
+
+Kemudian, isi file ketiga folder dimasukkan ke dalam masing-masing folder sesuai bentuk filenya:
 
 ```c
   	while(wait(NULL) > 0);
@@ -136,7 +164,7 @@ Setelah file diunzip, kemudian hasil nya dimasukkan ke dalam masing-masing folde
 Untuk memudahkan Steven, ia ingin semua hal di atas berjalan otomatis 6 jam sebelum waktu ulang tahun Stevany).
 
 **Penyelesaian**\
-Di sini kami menggunakan fungsi `localtime(&t)` untuk mendapatkan waktu sekarang, lalu kami menggunakan fungsi `strcmp` untuk mengecek apakah waktu sekarang sama dengan waktu 6 jam sebelum ulang tahun Stevany.\
+Di sini kami menggunakan fungsi `localtime(&t)` untuk mendapatkan waktu sekarang, lalu kami menggunakan fungsi `strcmp` untuk mengecek apakah waktu sekarang sama dengan waktu 6 jam sebelum ulang tahun Stevany.
 
 ```c
     while (1) {
@@ -152,7 +180,8 @@ Di sini kami menggunakan fungsi `localtime(&t)` untuk mendapatkan waktu sekarang
 Setelah itu pada waktu ulang tahunnya Stevany, semua folder akan di zip dengan nama Lopyu_Stevany.zip dan semua folder akan di delete(sehingga hanya menyisakan .zip).
 
 **Penyelesaian**\
-Di sini kami menggunakan fungsi `localtime(&t)` untuk mendapatkan waktu sekarang, lalu kami menggunakan fungsi `strcmp` untuk mengecek apakah waktu sekarang sama dengan waktu  ulang tahun Stevany.\
+Di sini kami menggunakan fungsi `localtime(&t)` untuk mendapatkan waktu sekarang, lalu kami menggunakan fungsi `strcmp` untuk mengecek apakah waktu sekarang sama dengan waktu  ulang tahun Stevany.
+
 ```c
     while (1) {
 
@@ -164,6 +193,7 @@ Di sini kami menggunakan fungsi `localtime(&t)` untuk mendapatkan waktu sekarang
 ```
 
 Dimisalkan sudah waktu ulang tahun Stevany, maka folder-folder yang dibuat Steven dimasukkan jadi satu sekaligus di zip dengan code berikut:
+
 ```c
 	while(wait(NULL) > 0);
 	child_id = fork();
@@ -173,6 +203,7 @@ Dimisalkan sudah waktu ulang tahun Stevany, maka folder-folder yang dibuat Steve
 ```
 
 Dan semua folder-folder selain Lopyu_Stevany.zip akan didelete dengan `rm`:
+
 ```c
 	while(wait(NULL) > 0);
     child_id = fork();
@@ -370,6 +401,7 @@ for(i = 0; message[i] != '\0'; ++i){
 ```
 
 Setelah itu, kami melakukan zip terhadap folder yang ada, baru kemudian menghapus folder tersebut (Child process akan melakukan zip terhadap folder dan parent process akan menunggu child process selesai dan menghapus directory folder yang telah di zip):
+
 ```c
       while(wait(NULL) > 0);
       child_id = fork();
@@ -390,53 +422,39 @@ Setelah itu, kami melakukan zip terhadap folder yang ada, baru kemudian menghapu
 Untuk mempermudah pengendalian program, pembimbing magang Ranora ingin program tersebut akan men-generate sebuah program “Killer” yang executable, dimana program tersebut akan menterminasi semua proses program yang sedang berjalan dan akan menghapus dirinya sendiri setelah program dijalankan. Karena Ranora menyukai sesuatu hal yang baru, maka Ranora memiliki ide untuk program “Killer” yang dibuat nantinya harus merupakan program bash.
 
 **Penyelesaian**\
-Mula-mula, kami membuat sebuah file baru bernama `killer.c` (Deklarasi file ini dilakukan sebelum bagian loop utama daemon dan setelah mendapatkan **Session ID** (`sid`)):
+Mula-mula, kami membuat sebuah file baru bernama `kill.sh` (Deklarasi file ini dilakukan sebelum bagian loop utama daemon dan setelah mendapatkan **Session ID** (`sid`)):
 
 ```c
-FILE *killer;
-killer = fopen("killer.c", "w");
+  FILE *killer;
+  killer = fopen("kill.sh", "w");
 ```
 
-Selanjutnya, kami mendeklarasikan sebuah variabel `func` yang berisi program yang akan kami masukkan pada file `killer.c`. Lalu file `killer.c` akan kami inputkan dengan string yang sesuai untuk melakukan perintah `pkill` sesuai dengan ***Session ID*** (`sid`) dari program utama (Penggunaan ***Session ID*** agar seluruh *child process* juga ikut di **kill** melalui perintah `pkill`).\
+Selanjutnya, kami mendeklarasikan sebuah variabel `func` yang berisi program yang akan kami masukkan pada file `kill.sh`. Lalu file `kill.sh` akan kami inputkan dengan string yang sesuai untuk melakukan perintah `kill -9` sesuai dengan ***Session ID*** (`sid`) dari program utama (Penggunaan ***Session ID*** agar seluruh *child process* juga ikut di **kill** melalui perintah `kill -9`).
 
 ```c
-char *func = ""
-    "#include <unistd.h>\n"
-    "#include <wait.h>\n"
-    "int main() {\n"
-      "pid_t child_id = fork();\n"
-      "if (child_id == 0) {\n"
-        "char *argv[] = {\"pkill\", \"-9\", \"-s\", \"%d\", NULL};\n"
-        "execv(\"/usr/bin/pkill\", argv);\n"
-      "}\n"
-      "while(wait(NULL) > 0);\n"
-      "char *argv[] = {\"rm\", \"killer\", NULL};\n"
-      "execv(\"/bin/rm\", argv);\n"
-    "}\n";
+char *func = "\n"
+    "#!/bin/bash\n"
+    "/usr/bin/kill -9 \"%d\"\n"
+    "/bin/rm kill.sh\n";
     fprintf(killer, func, sid);
+  }
 ```
 
-Lalu program killer tersebut akan menghapus dirinya sendiri. Cara tersebut dapat dilakukan dengan melakukan `fork()` dimana *child process* akan melakukan `killer` dan *parent process* akan menunggu *child process* dan melakukan `rm`. Lalu string tersebut diwrite kedalam `killer` dengan fungsi `fprintf()`. Lalu pointer file `killer` akan ditutup koneksinya menggunakan fungsi fclose().
+Lalu program killer tersebut akan menghapus dirinya sendiri. Lalu string tersebut diwrite kedalam `killer` dengan fungsi `fprintf()`. Lalu pointer file `killer` akan ditutup koneksinya menggunakan fungsi fclose().
 
 ```c
  fclose(killer);
 ```
 
-Kemudian, program utama akan membuat child process untuk melakukan compile terhadap file killer.c menggunakan perintah gcc. Setelah itu program utama akan membuat child process kembali untuk melakukan remove terhadap file killer.c menggunakan perintah rm.
+Kemudian, di sini juga digunakan argumen `chmod +x` untuk menyimpan dan ubah permission file script agar dapat dieksekusi.
 
 ```c
-pid = fork();
-  if (pid == 0) {
-    char *argv[] = {"gcc", "killer.c", "-o", "killer", NULL};
-    execv("/usr/bin/gcc", argv);
-  }
-  while(wait(NULL) != pid);
-
   pid = fork();
   if (pid == 0) {
-    char *argv[] = {"rm", "killer.c", NULL};
-    execv("/bin/rm", argv);
+    char *argv[] = {"chmod","+x","kill.sh", NULL};
+    execv("/bin/chmod", argv);
   }
+  while(wait(NULL) != pid);
 ```
 
 ### Soal 3.e.
@@ -447,36 +465,18 @@ Karena ada 2 mode, maka kami menggunakan `strcmp` untuk menyesuaikan format argu
 
 ```c
   if (strcmp(argv[1], "-z") == 0) {
-    char *func = ""
-    "#include <unistd.h>\n"
-    "#include <wait.h>\n"
-    "int main() {\n"
-      "pid_t child_id = fork();\n"
-      "if (child_id == 0) {\n"
-        "char *argv[] = {\"pkill\", \"-9\", \"-s\", \"%d\", NULL};\n"
-        "execv(\"/usr/bin/pkill\", argv);\n"
-      "}\n"
-      "while(wait(NULL) > 0);\n"
-      "char *argv[] = {\"rm\", \"killer\", NULL};\n"
-      "execv(\"/bin/rm\", argv);\n"
-    "}\n";
+    char *func = "\n"
+    "#!/bin/bash\n"
+    "/usr/bin/kill -9 \"%d\"\n"
+    "/bin/rm kill.sh\n";
     fprintf(killer, func, sid);
   }
 
   if (strcmp(argv[1], "-x") == 0) {
-    char *func = ""
-    "#include <unistd.h>\n"
-    "#include <wait.h>\n"
-    "int main() {\n"
-      "pid_t child_id = fork();\n"
-      "if (child_id == 0) {\n"
-        "char *argv[] = {\"kill\", \"-9\", \"%d\", NULL};\n"
-        "execv(\"/bin/kill\", argv);\n"
-      "}\n"
-      "while(wait(NULL) > 0);\n"
-      "char *argv[] = {\"rm\", \"killer\", NULL};\n"
-      "execv(\"/bin/rm\", argv);\n"
-    "}\n";
+    char *func = "\n"
+    "#!/bin/bash\n"
+    "/usr/bin/kill -9 \"%d\"\n"
+    "/bin/rm kill.sh\n";
     fprintf(killer, func, getpid());
   }
 ```
