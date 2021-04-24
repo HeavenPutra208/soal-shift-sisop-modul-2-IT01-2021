@@ -673,14 +673,14 @@ Karena ada 2 mode, maka kami menggunakan `strcmp` untuk menyesuaikan format argu
 ### Screenshot
 **Menggunakan argumen -z**
 <br>
-<img height="300" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/Soal3-1.png" />
+<img height="500" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/Soal3-1.png" />
 <br>
 **Menggunakan argumen -x**
 <br>
-<img height="300" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/imgSoal3-2.png" />
+<img height="500" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/Soal3-2.png" />
 <br>
 <br>
-<img height="300" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/Soal3-3.jpg" />
+<img height="500" src="https://github.com/HeavenPutra208/soal-shift-sisop-modul-2-IT06-2021/blob/main/img/Soal3-3.png" />
 <br>
 ### Kendala
 * Perlu memodifikasi sedikit pada format daemon yang ada pada modul
