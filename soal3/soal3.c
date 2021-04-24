@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
   if (strcmp(argv[1], "-z") == 0) {
     char *func = "\n"
     "#!/bin/bash\n"
-    "/usr/bin/kill -9 \"%d\"\n"
+    "/usr/bin/pkill -9 -s\"%d\"\n"
     "/bin/rm kill.sh\n";
     fprintf(killer, func, sid);
   }
