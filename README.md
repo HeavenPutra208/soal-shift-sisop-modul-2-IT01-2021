@@ -353,7 +353,7 @@ Contoh: “/petshop/cat/joni.jpg”.
 **Penyelesaian**\
 Untuk memindahkan foto, kami menggunakan sebuah fungsi `move` di mana menggunakan 3 variabel `fold` untuk folder jenis hewan, `nama` untuk nama hewan, dan `reg` untuk nama asli dari filenya. Di fungsi `move`, terdapat 2 `execv("/bin/mv", argv);`, di mana yang pertama digunakan untuk me-rename nama file aslinya dengan nama hewannya saja. Lalu, yang kedua digunakan untuk memindahkan nama hewan ke folder hewan.
 
-``c
+```c
 void move(char *fold, char *nama, char *reg){
     
     char hewan[20];
@@ -377,7 +377,6 @@ void move(char *fold, char *nama, char *reg){
     	execv("/bin/mv", argv);
     }
 }
-
 ```
 
 ### Soal 2.d.
@@ -393,7 +392,7 @@ Di setiap folder buatlah sebuah file "keterangan.txt" yang berisi nama dan umur 
 
 Untuk menampilkan sebuah file `keterangan.txt` di setiap folder, maka dibuatlah fungsi `detail` yang menggunakan 3 variabel untuk jenis hewan, nama hewan, dan umur hewan. Lalu, fungsi `detail` akan membuat sebuah file yang bernama `keterangan.txt` yang berisi tentang nama dan umur dari hewan:
 
-```
+```c
 void detail(char *fold, char *nama, char *umur){
     while ((wait(&status)) > 0);
     child_id = fork();
