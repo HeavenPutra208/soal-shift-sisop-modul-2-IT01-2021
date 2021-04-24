@@ -84,11 +84,17 @@ void input(char *nama){
     char *folder = ket[0];
     char *nama = ket[1];
     char *age = ket[2];
-    char *umur = strtok(age, ".");
+
+    char *umur;
+    umur = strstr(age ,".jpg");
+    if (umur != NULL) {
+        int save = umur - age;
+        sprintf(age, "%.*s", save, age);
+    }
 
     mkfolder(folder);
     move(folder, nama, regular);
-    detail(folder, nama, umur);
+    detail(folder, nama, age);
   }
   closedir(dir);
 }
